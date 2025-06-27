@@ -32,7 +32,11 @@ def search(browser: Browser):
 
 def setup_quick_search(context: SearchContext):
     global cbSuspended, cbDue, cbNew
+
     query = context.search.strip()
+
+    if "nid:" in query or "cid:" in query:
+        return
 
     if cbSuspended is not None and not cbSuspended.isChecked():
         query = f"({query}) -is:suspended"
