@@ -9,9 +9,10 @@ from aqt.qt import *
 cbSuspended: QCheckBox = None
 cbDue: QCheckBox = None
 cbNew: QCheckBox = None
+cbFlag: QCheckBox = None
 
 def setup_quick_search_in_browser(browser: Browser):
-    global cbSuspended, cbDue, cbNew
+    global cbSuspended, cbDue, cbNew, cbFlag
     cbSuspended = QCheckBox("Show Suspended", browser)
     cbSuspended.setChecked(False)
     browser.form.gridLayout.addWidget(cbSuspended, 0, 2)
@@ -27,11 +28,17 @@ def setup_quick_search_in_browser(browser: Browser):
     browser.form.gridLayout.addWidget(cbNew, 0, 4)
     cbNew.toggled.connect(partial(search, browser))
 
+    cbFlag = QCheckBox("Flag", browser)
+    cbFlag.setChecked(False)
+    browser.form.gridLayout.addWidget(cbFlag, 0, 5)
+    cbFlag.toggled.connect(partial(search, browser))
+
+
 def search(browser: Browser):
     browser.onSearchActivated()
 
 def setup_quick_search(context: SearchContext):
-    global cbSuspended, cbDue, cbNew
+    global cbSuspended, cbDue, cbNew, cbFlag
 
     query = context.search.strip()
 
@@ -46,6 +53,9 @@ def setup_quick_search(context: SearchContext):
 
     if cbNew is not None and cbNew.isChecked():
         query = f"({query}) is:new"
+
+    if cbFlag is not None and cbFlag.isChecked():
+        query = f"({query}) -flag:0"
 
     context.search = query
 

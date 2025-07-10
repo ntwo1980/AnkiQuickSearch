@@ -7,3 +7,4 @@ A simple anki addon to add two checkbox in the search bar. The addon doesn't sho
 * Show suspended. Show suspended cards.
 * Due. Show due cards.
 * New. Show new cards.
+* Flag. Show cards with flags.
