@@ -10,9 +10,10 @@ cbSuspended: QCheckBox = None
 cbDue: QCheckBox = None
 cbNew: QCheckBox = None
 cbFlag: QCheckBox = None
+cbFlag1: QCheckBox = None
 
 def setup_quick_search_in_browser(browser: Browser):
-    global cbSuspended, cbDue, cbNew, cbFlag
+    global cbSuspended, cbDue, cbNew, cbFlag, cbFlag1
     cbSuspended = QCheckBox("Show Suspended", browser)
     cbSuspended.setChecked(False)
     browser.form.gridLayout.addWidget(cbSuspended, 0, 2)
@@ -32,6 +33,11 @@ def setup_quick_search_in_browser(browser: Browser):
     cbFlag.setChecked(False)
     browser.form.gridLayout.addWidget(cbFlag, 0, 5)
     cbFlag.toggled.connect(partial(search, browser))
+
+    cbFlag1 = QCheckBox("Flag1", browser)
+    cbFlag1.setChecked(False)
+    browser.form.gridLayout.addWidget(cbFlag1, 0, 6)
+    cbFlag1.toggled.connect(partial(search, browser))
 
 
 def search(browser: Browser):
@@ -56,6 +62,9 @@ def setup_quick_search(context: SearchContext):
 
     if cbFlag is not None and cbFlag.isChecked():
         query = f"({query}) -flag:0"
+
+    if cbFlag1 is not None and cbFlag1.isChecked():
+        query = f"({query}) flag:1"
 
     context.search = query
 
