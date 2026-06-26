@@ -8,10 +8,12 @@ from aqt.qt import *
 
 
 class _MultiSelectMenu(QMenu):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, single_selection=False, on_change=None):
         super().__init__(parent)
         self._exclusive_action = None
         self._clear_action = None
+        self._single_selection = single_selection
+        self._on_change = on_change
 
     def mouseReleaseEvent(self, event):
         action = self.activeAction()
@@ -19,6 +21,13 @@ class _MultiSelectMenu(QMenu):
             if action is self._clear_action:
                 for a in self.actions():
                     a.setChecked(False)
+            elif self._single_selection:
+                # Uncheck all other actions if single selection is enabled
+                for a in self.actions():
+                    if a is not action:
+                        a.setChecked(False)
+                # Set the current action's state
+                action.setChecked(True)
             else:
                 new_state = not action.isChecked()
                 action.setChecked(new_state)
@@ -29,17 +38,18 @@ class _MultiSelectMenu(QMenu):
                                 a.setChecked(False)
                     elif self._exclusive_action is not None:
                         self._exclusive_action.setChecked(False)
+
+            if self._on_change:
+                self._on_change()
         else:
             super().mouseReleaseEvent(event)
 
 
 class CheckableComboBox(QPushButton):
-    def __init__(self, placeholder, parent=None, on_change=None):
+    def __init__(self, placeholder, parent=None, on_change=None, single_selection=False):
         super().__init__(placeholder, parent)
-        self._menu = _MultiSelectMenu(self)
+        self._menu = _MultiSelectMenu(self, single_selection=single_selection, on_change=on_change)
         self.setMenu(self._menu)
-        if on_change:
-            self._menu.aboutToHide.connect(on_change)
 
     def addCheckableItem(self, text, exclusive=False):
         action = QAction(text, self._menu)
@@ -59,7 +69,7 @@ class CheckableComboBox(QPushButton):
 
 
 cbSuspended: QCheckBox = None
-cbDue: QCheckBox = None
+cbDue: CheckableComboBox = None
 cbNew: QCheckBox = None
 cbFlag: CheckableComboBox = None
 cbRecent: QCheckBox = None
@@ -71,15 +81,16 @@ def setup_quick_search_in_browser(browser: Browser):
     browser.form.gridLayout.addWidget(cbSuspended, 0, 2)
     cbSuspended.toggled.connect(partial(search, browser))
 
-    cbDue = QCheckBox("Due", browser)
-    cbDue.setChecked(False)
-    browser.form.gridLayout.addWidget(cbDue, 0, 3)
-    cbDue.toggled.connect(partial(search, browser))
-
     cbNew = QCheckBox("New", browser)
     cbNew.setChecked(False)
-    browser.form.gridLayout.addWidget(cbNew, 0, 4)
+    browser.form.gridLayout.addWidget(cbNew, 0, 3)
     cbNew.toggled.connect(partial(search, browser))
+
+    cbDue = CheckableComboBox("Due", browser, on_change=partial(search, browser), single_selection=True)
+    cbDue.addClearItem("(no filter)")
+    for i in range(11):
+        cbDue.addCheckableItem(f"Due in {i} days")
+    browser.form.gridLayout.addWidget(cbDue, 0, 4)
 
     cbFlag = CheckableComboBox("Flag", browser, on_change=partial(search, browser))
     cbFlag.addClearItem("(no filter)")
@@ -107,8 +118,13 @@ def setup_quick_search(context: SearchContext):
     if cbSuspended is not None and not cbSuspended.isChecked():
         query = f"({query}) -is:suspended"
 
-    if cbDue is not None and cbDue.isChecked():
-        query = f"({query}) is:due"
+    if cbDue is not None:
+        checked = cbDue.checkedItems()
+        if checked:
+            due_days_str = checked[0].split(" ")[2]
+            due_days = int(due_days_str)
+            due_query = " OR ".join(f"prop:due={i}" for i in range(due_days + 1))
+            query = f"({query}) ({due_query})"
 
     if cbNew is not None and cbNew.isChecked():
         query = f"({query}) is:new"
