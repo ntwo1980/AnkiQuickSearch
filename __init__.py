@@ -22,12 +22,16 @@ class _MultiSelectMenu(QMenu):
                 for a in self.actions():
                     a.setChecked(False)
             elif self._single_selection:
-                # Uncheck all other actions if single selection is enabled
-                for a in self.actions():
-                    if a is not action:
-                        a.setChecked(False)
-                # Set the current action's state
-                action.setChecked(True)
+                # If the clicked action is already checked, uncheck it
+                if action.isChecked():
+                    action.setChecked(False)
+                else:
+                    # Uncheck all other actions
+                    for a in self.actions():
+                        if a is not action:
+                            a.setChecked(False)
+                    # Check the clicked action
+                    action.setChecked(True)
             else:
                 new_state = not action.isChecked()
                 action.setChecked(new_state)
@@ -68,26 +72,27 @@ class CheckableComboBox(QPushButton):
         return [action.text() for action in self._menu.actions() if action.isChecked()]
 
 
-cbSuspended: QCheckBox = None
+cbSuspended: QPushButton = None
 cbDue: CheckableComboBox = None
-cbNew: QCheckBox = None
+cbNew: QPushButton = None
 cbFlag: CheckableComboBox = None
-cbRecent: QCheckBox = None
+cbRecent: QPushButton = None
 
 def setup_quick_search_in_browser(browser: Browser):
     global cbSuspended, cbDue, cbNew, cbFlag, cbRecent
-    cbSuspended = QCheckBox("Show Suspended", browser)
+    cbSuspended = QPushButton("Show Suspended", browser)
+    cbSuspended.setCheckable(True)
     cbSuspended.setChecked(False)
     browser.form.gridLayout.addWidget(cbSuspended, 0, 2)
     cbSuspended.toggled.connect(partial(search, browser))
 
-    cbNew = QCheckBox("New", browser)
+    cbNew = QPushButton("New", browser)
+    cbNew.setCheckable(True)
     cbNew.setChecked(False)
     browser.form.gridLayout.addWidget(cbNew, 0, 3)
     cbNew.toggled.connect(partial(search, browser))
 
     cbDue = CheckableComboBox("Due", browser, on_change=partial(search, browser), single_selection=True)
-    cbDue.addClearItem("(no filter)")
     for i in range(11):
         cbDue.addCheckableItem(f"Due in {i} days")
     browser.form.gridLayout.addWidget(cbDue, 0, 4)
@@ -99,7 +104,8 @@ def setup_quick_search_in_browser(browser: Browser):
         cbFlag.addCheckableItem(label)
     browser.form.gridLayout.addWidget(cbFlag, 0, 5)
 
-    cbRecent = QCheckBox("Recent Added", browser)
+    cbRecent = QPushButton("Recent Added", browser)
+    cbRecent.setCheckable(True)
     cbRecent.setChecked(False)
     browser.form.gridLayout.addWidget(cbRecent, 0, 6)
     cbRecent.toggled.connect(partial(search, browser))
