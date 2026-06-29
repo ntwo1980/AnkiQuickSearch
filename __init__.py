@@ -158,7 +158,7 @@ def setup_quick_search(context: SearchContext):
     if cbRecent is not None and cbRecent.isChecked():
         config = mw.addonManager.getConfig(__name__)
         days = config.get("recent_added_days", 10) if config else 10
-        query = f"({query}) added:{days} is:new"
+        query = f"({query}) added:{days}"
 
     context.search = query
 
