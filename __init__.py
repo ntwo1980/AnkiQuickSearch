@@ -72,49 +72,52 @@ class CheckableComboBox(QPushButton):
         return [action.text() for action in self._menu.actions() if action.isChecked()]
 
 
-cbSuspended: QPushButton = None
+cbSuspended: QCheckBox = None
 cbDue: CheckableComboBox = None
-cbNew: QPushButton = None
+cbStudied: CheckableComboBox = None
+cbNew: QCheckBox = None
 cbFlag: CheckableComboBox = None
-cbRecent: QPushButton = None
+cbRecent: QCheckBox = None
 
 def setup_quick_search_in_browser(browser: Browser):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent
-    cbSuspended = QPushButton("Show Suspended", browser)
-    cbSuspended.setCheckable(True)
+    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied
+    cbSuspended = QCheckBox("Show Suspended", browser)
     cbSuspended.setChecked(False)
     browser.form.gridLayout.addWidget(cbSuspended, 0, 2)
     cbSuspended.toggled.connect(partial(search, browser))
 
-    cbNew = QPushButton("New", browser)
-    cbNew.setCheckable(True)
+    cbNew = QCheckBox("New", browser)
     cbNew.setChecked(False)
     browser.form.gridLayout.addWidget(cbNew, 0, 3)
     cbNew.toggled.connect(partial(search, browser))
 
     cbDue = CheckableComboBox("Due", browser, on_change=partial(search, browser), single_selection=True)
-    for i in range(11):
+    for i in [1, 3, 7, 14, 30]:
         cbDue.addCheckableItem(f"Due in {i} days")
     browser.form.gridLayout.addWidget(cbDue, 0, 4)
+
+    cbStudied = CheckableComboBox("Studied", browser, on_change=partial(search, browser), single_selection=True)
+    for i in [1, 3, 7, 14, 30]:
+        cbStudied.addCheckableItem(f"Studied in {i} days")
+    browser.form.gridLayout.addWidget(cbStudied, 0, 5)
 
     cbFlag = CheckableComboBox("Flag", browser, on_change=partial(search, browser))
     cbFlag.addClearItem("(no filter)")
     cbFlag.addCheckableItem("Any flag", exclusive=True)
     for label in ["flag 1", "flag 2", "flag 3", "flag 4", "flag 5", "flag 6", "flag 7"]:
         cbFlag.addCheckableItem(label)
-    browser.form.gridLayout.addWidget(cbFlag, 0, 5)
+    browser.form.gridLayout.addWidget(cbFlag, 0, 6)
 
-    cbRecent = QPushButton("Recent Added", browser)
-    cbRecent.setCheckable(True)
+    cbRecent = QCheckBox("Recent Added", browser)
     cbRecent.setChecked(False)
-    browser.form.gridLayout.addWidget(cbRecent, 0, 6)
+    browser.form.gridLayout.addWidget(cbRecent, 0, 7)
     cbRecent.toggled.connect(partial(search, browser))
 
 def search(browser: Browser):
     browser.onSearchActivated()
 
 def setup_quick_search(context: SearchContext):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent
+    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied
 
     query = context.search.strip()
 
@@ -131,6 +134,13 @@ def setup_quick_search(context: SearchContext):
             due_days = int(due_days_str)
             due_query = " OR ".join(f"prop:due={i}" for i in range(due_days + 1))
             query = f"({query}) ({due_query})"
+
+    if cbStudied is not None:
+        checked = cbStudied.checkedItems()
+        if checked:
+            studied_days_str = checked[0].split(" ")[2]
+            studied_days = int(studied_days_str)
+            query = f"({query}) rated:{studied_days}"
 
     if cbNew is not None and cbNew.isChecked():
         query = f"({query}) is:new"
