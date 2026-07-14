@@ -106,7 +106,7 @@ cbFlag: CheckableComboBox = None
 cbRecent: CheckableComboBox = None
 
 # --- Helper function to create a switchable combo box ---
-def create_switchable_combobox(browser: Browser, name: str, single_selection: bool, items: list, exclusive_items: list = None, clear_item: str = None):
+def create_switchable_combobox(browser: Browser, name: str, single_selection: bool, items: list, exclusive_items: list = None, clear_item: str = None, default_item: str = None):
     # Layout
     container = QWidget(browser)
     layout = QHBoxLayout(container)
@@ -139,7 +139,10 @@ def create_switchable_combobox(browser: Browser, name: str, single_selection: bo
     def on_switch_toggled(checked):
         if checked:
             if not combo.checkedItems():
-                combo.select_first()
+                if default_item:
+                    combo.setChecked([default_item])
+                else:
+                    combo.select_first()
         else:
             combo.clear()
 
@@ -180,13 +183,13 @@ def setup_quick_search_in_browser(browser: Browser):
 
     # Due
     due_container, cbDue = create_switchable_combobox(
-        browser, "Due", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]]
+        browser, "Due", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
     )
     grid.addWidget(due_container, 0, 2)
 
     # Studied
     studied_container, cbStudied = create_switchable_combobox(
-        browser, "Studied", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]]
+        browser, "Studied", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
     )
     grid.addWidget(studied_container, 0, 3)
 
@@ -200,7 +203,7 @@ def setup_quick_search_in_browser(browser: Browser):
 
     # Recently Added
     recent_container, cbRecent = create_switchable_combobox(
-        browser, "Added", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]]
+        browser, "Added", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
     )
     grid.addWidget(recent_container, 0, 5)
 
