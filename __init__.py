@@ -6,7 +6,6 @@ from functools import partial
 from aqt.errors import show_exception
 from aqt.qt import *
 
-
 class _MultiSelectMenu(QMenu):
     def __init__(self, parent=None, single_selection=False, on_change=None):
         super().__init__(parent)
@@ -42,12 +41,10 @@ class _MultiSelectMenu(QMenu):
                                 a.setChecked(False)
                     elif self._exclusive_action is not None:
                         self._exclusive_action.setChecked(False)
-
             if self._on_change:
                 self._on_change()
         else:
             super().mouseReleaseEvent(event)
-
 
 class CheckableComboBox(QPushButton):
     def __init__(self, placeholder, parent=None, on_change=None, single_selection=False):
@@ -96,7 +93,6 @@ class CheckableComboBox(QPushButton):
                 action.setChecked(True)
                 break
         self._internal_on_change()
-
 
 cbSuspended: QCheckBox = None
 cbDue: CheckableComboBox = None
@@ -150,7 +146,6 @@ def create_switchable_combobox(browser: Browser, name: str, single_selection: bo
 
     combo._on_change = on_combo_change
     switch.toggled.connect(on_switch_toggled)
-
     return container, combo
 
 def setup_quick_search_in_browser(browser: Browser):
@@ -170,46 +165,59 @@ def setup_quick_search_in_browser(browser: Browser):
     # Grid layout for all filters
     grid = QGridLayout()
     grid.setSpacing(10)
+    grid.setContentsMargins(0, 0, 0, 0)
 
     # Suspended
     cbSuspended = QCheckBox("Suspended", browser)
     cbSuspended.setChecked(False)
+    cbSuspended.setMaximumWidth(100)
     grid.addWidget(cbSuspended, 0, 0)
     cbSuspended.toggled.connect(partial(search, browser))
 
     # New
     cbNew = QCheckBox("New", browser)
     cbNew.setChecked(False)
+    cbNew.setMaximumWidth(100)
     grid.addWidget(cbNew, 0, 1)
     cbNew.toggled.connect(partial(search, browser))
 
     # Due
     due_container, cbDue = create_switchable_combobox(
-        browser, "Due", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
+        browser, "Due", True,
+        [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]],
+        default_item="in 0 days"
     )
     grid.addWidget(due_container, 0, 2)
 
     # Studied
     studied_container, cbStudied = create_switchable_combobox(
-        browser, "Studied", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+        browser, "Studied", True,
+        [f"in {i} days" for i in [1, 3, 7, 14, 30]],
+        default_item="in 1 days"
     )
     grid.addWidget(studied_container, 0, 3)
 
     # Recently Added
     recent_container, cbRecent = create_switchable_combobox(
-        browser, "Added", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+        browser, "Added", True,
+        [f"in {i} days" for i in [1, 3, 7, 14, 30]],
+        default_item="in 1 days"
     )
     grid.addWidget(recent_container, 0, 4)
 
     # Introduced
     introduced_container, cbIntroduced = create_switchable_combobox(
-        browser, "Introduced", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+        browser, "Introduced", True,
+        [f"in {i} days" for i in [1, 3, 7, 14, 30]],
+        default_item="in 1 days"
     )
     grid.addWidget(introduced_container, 0, 5)
 
     # Again
     again_container, cbAgain = create_switchable_combobox(
-        browser, "Again", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+        browser, "Again", True,
+        [f"in {i} days" for i in [1, 3, 7, 14, 30]],
+        default_item="in 1 days"
     )
     grid.addWidget(again_container, 0, 6)
 
@@ -221,18 +229,15 @@ def setup_quick_search_in_browser(browser: Browser):
     )
     grid.addWidget(flag_container, 0, 7)
 
-    # Add the grid to the main layout
-    browser.form.gridLayout.addLayout(grid, 0, 2, 1, 1) # Span 1 column, as it's a single layout item
-
+    browser.form.gridLayout.addLayout(grid, 1, 0, 1, 8)
+    browser.form.gridLayout.setColumnMinimumWidth(0, 150)
 
 def search(browser: Browser):
     browser.onSearchActivated()
 
 def setup_quick_search(context: SearchContext):
     global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
-
     query = context.search.strip()
-
     if "nid:" in query or "cid:" in query:
         return
 
