@@ -104,6 +104,8 @@ cbStudied: CheckableComboBox = None
 cbNew: QCheckBox = None
 cbFlag: CheckableComboBox = None
 cbRecent: CheckableComboBox = None
+cbIntroduced: CheckableComboBox = None
+cbAgain: CheckableComboBox = None
 
 # --- Helper function to create a switchable combo box ---
 def create_switchable_combobox(browser: Browser, name: str, single_selection: bool, items: list, exclusive_items: list = None, clear_item: str = None, default_item: str = None):
@@ -152,7 +154,7 @@ def create_switchable_combobox(browser: Browser, name: str, single_selection: bo
     return container, combo
 
 def setup_quick_search_in_browser(browser: Browser):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied
+    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
 
     # Find existing layout to remove it if it exists
     if browser.form.gridLayout.itemAtPosition(0, 2):
@@ -189,9 +191,27 @@ def setup_quick_search_in_browser(browser: Browser):
 
     # Studied
     studied_container, cbStudied = create_switchable_combobox(
-        browser, "Studied", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
+        browser, "Studied", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
     )
     grid.addWidget(studied_container, 0, 3)
+
+    # Recently Added
+    recent_container, cbRecent = create_switchable_combobox(
+        browser, "Added", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+    )
+    grid.addWidget(recent_container, 0, 4)
+
+    # Introduced
+    introduced_container, cbIntroduced = create_switchable_combobox(
+        browser, "Introduced", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+    )
+    grid.addWidget(introduced_container, 0, 5)
+
+    # Again
+    again_container, cbAgain = create_switchable_combobox(
+        browser, "Again", True, [f"in {i} days" for i in [1, 3, 7, 14, 30]], default_item="in 1 days"
+    )
+    grid.addWidget(again_container, 0, 6)
 
     # Flag
     flag_container, cbFlag = create_switchable_combobox(
@@ -199,13 +219,7 @@ def setup_quick_search_in_browser(browser: Browser):
         items=[f"flag {i}" for i in range(1, 8)],
         exclusive_items=["Any flag"]
     )
-    grid.addWidget(flag_container, 0, 4)
-
-    # Recently Added
-    recent_container, cbRecent = create_switchable_combobox(
-        browser, "Added", True, [f"in {i} days" for i in [0, 1, 3, 7, 14, 30]], default_item="in 0 days"
-    )
-    grid.addWidget(recent_container, 0, 5)
+    grid.addWidget(flag_container, 0, 7)
 
     # Add the grid to the main layout
     browser.form.gridLayout.addLayout(grid, 0, 2, 1, 1) # Span 1 column, as it's a single layout item
@@ -215,7 +229,7 @@ def search(browser: Browser):
     browser.onSearchActivated()
 
 def setup_quick_search(context: SearchContext):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied
+    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
 
     query = context.search.strip()
 
@@ -259,6 +273,20 @@ def setup_quick_search(context: SearchContext):
             added_days_str = checked[0].split(" ")[1]
             added_days = int(added_days_str)
             query = f"({query}) added:{added_days}"
+
+    if cbIntroduced is not None:
+        checked = cbIntroduced.checkedItems()
+        if checked:
+            introduced_days_str = checked[0].split(" ")[1]
+            introduced_days = int(introduced_days_str)
+            query = f"({query}) introduced:{introduced_days}"
+
+    if cbAgain is not None:
+        checked = cbAgain.checkedItems()
+        if checked:
+            again_days_str = checked[0].split(" ")[1]
+            again_days = int(again_days_str)
+            query = f"({query}) rated:{again_days}:1"
 
     context.search = query
 

@@ -10,5 +10,7 @@ A simple Anki addon that adds several checkboxes and dropdown menus to the brows
 - **New**: When checked, only new cards will be displayed.
 - **Due**: A single-select dropdown menu to filter cards due within a specified number of days (1, 3, 7, 14, or 30 days).
 - **Studied**: A single-select dropdown menu to filter cards studied within a specified number of days (1, 3, 7, 14, or 30 days).
-- **Flag**: A multi-select dropdown menu to filter cards by flag. You can select "Any flag" to show cards with any flag, or select one or more specific flags.
 - **Added**: A single-select dropdown menu to filter cards added within a specified number of days (1, 3, 7, 14, or 30 days).
+- **Introduced**: A single-select dropdown menu to filter cards introduced (first studied) within a specified number of days (1, 3, 7, 14, or 30 days).
+- **Again**: A single-select dropdown menu to filter cards rated "Again" within a specified number of days (1, 3, 7, 14, or 30 days).
+- **Flag**: A multi-select dropdown menu to filter cards by flag. You can select "Any flag" to show cards with any flag, or select one or more specific flags.

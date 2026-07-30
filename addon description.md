@@ -14,6 +14,10 @@ By default, **suspended cards are hidden**.
 - **New** – Show only new (unstudied) cards.
 - **Due** – Single-select dropdown to filter cards due within a specified number of days (1, 3, 7, 14, or 30).
 - **Studied** – Single-select dropdown to filter cards studied within a specified number of days (1, 3, 7, 14, or 30).
+- **Added** – Single-select dropdown to filter cards added within a specified number of days (1, 3, 7, 14, or 30).
+- **Introduced** – Single-select dropdown to filter cards introduced (first studied) within a specified number of days (1, 3, 7, 14, or 30).
+- **Again** – Single-select dropdown to filter cards rated "Again" within a specified number of days (1, 3, 7, 14, or 30).
+- **Flag** – Multi-select dropdown to filter cards by flag. You can select "Any flag" to show cards with any flag, or select one or more specific flags.
 - **Flag** – Multi-select dropdown to filter by flag:
   - **Any flag** – Show only flagged cards (any color).
   - **flag 1–7** – Show cards with specific flag(s).
