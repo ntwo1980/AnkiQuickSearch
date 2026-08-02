@@ -229,8 +229,8 @@ def setup_quick_search_in_browser(browser: Browser):
     )
     grid.addWidget(flag_container, 0, 7)
 
-    browser.form.gridLayout.addLayout(grid, 1, 0, 1, 8)
-    browser.form.gridLayout.setColumnMinimumWidth(0, 150)
+    browser.form.gridLayout.addLayout(grid, 1, 1, 1, 8)
+    #browser.form.gridLayout.setColumnMinimumWidth(0, 150)
 
 def search(browser: Browser):
     browser.onSearchActivated()
