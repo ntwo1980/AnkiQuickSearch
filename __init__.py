@@ -122,6 +122,7 @@ cbSuspended: QCheckBox = None
 cbDue: CheckableComboBox = None
 cbStudied: CheckableComboBox = None
 cbNew: QCheckBox = None
+cbMarked: QCheckBox = None
 cbFlag: CheckableComboBox = None
 cbRecent: CheckableComboBox = None
 cbIntroduced: CheckableComboBox = None
@@ -183,7 +184,7 @@ def create_switchable_combobox(browser: Browser, name: str, single_selection: bo
     return container, combo
 
 def setup_quick_search_in_browser(browser: Browser):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
+    global cbSuspended, cbDue, cbNew, cbMarked, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
 
     # Find existing layout to remove it if it exists
     if browser.form.gridLayout.itemAtPosition(0, 2):
@@ -308,6 +309,15 @@ def setup_quick_search_in_browser(browser: Browser):
     )
     filter_row.addWidget(flag_container)
 
+    # Marked
+    cbMarked = QCheckBox("Marked", browser)
+    cbMarked.setObjectName("aqsFilterSimple")
+    cbMarked.setCursor(Qt.CursorShape.PointingHandCursor)
+    cbMarked.setFixedHeight(22)
+    cbMarked.setChecked(False)
+    filter_row.addWidget(cbMarked)
+    cbMarked.toggled.connect(partial(search, browser))
+
     # Suspended
     cbSuspended = QCheckBox("Suspended", browser)
     cbSuspended.setObjectName("aqsFilterSimple")
@@ -326,7 +336,7 @@ def search(browser: Browser):
     browser.onSearchActivated()
 
 def setup_quick_search(context: SearchContext):
-    global cbSuspended, cbDue, cbNew, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
+    global cbSuspended, cbDue, cbNew, cbMarked, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
     query = context.search.strip()
     if "nid:" in query or "cid:" in query:
         return
@@ -351,6 +361,9 @@ def setup_quick_search(context: SearchContext):
 
     if cbNew is not None and cbNew.isChecked():
         query = f"({query}) is:new"
+
+    if cbMarked is not None and cbMarked.isChecked():
+        query = f"({query}) tag:marked"
 
     if cbFlag is not None:
         checked = cbFlag.checkedItems()

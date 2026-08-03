@@ -10,7 +10,7 @@ By default, **suspended cards are hidden**.
 
 ## Filter options
 
-Current order from left to right: **Due**, **New**, **Studied**, **Added**, **Introduced**, **Again**, **Flag**, **Suspended**.
+Current order from left to right: **Due**, **New**, **Studied**, **Added**, **Introduced**, **Again**, **Flag**, **Marked**, **Suspended**.
 
 - **Due** – Single-select filter with `in 0 days`, `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
 - **New** – Checkbox to show only new cards.
@@ -19,4 +19,5 @@ Current order from left to right: **Due**, **New**, **Studied**, **Added**, **In
 - **Introduced** – Single-select filter with `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
 - **Again** – Single-select filter with `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
 - **Flag** – Multi-select filter with `Any flag` or one or more values from `flag 1` to `flag 7`.
+- **Marked** – Checkbox to include only cards with `tag:marked`.
 - **Suspended** – When checked, suspended cards are included. When unchecked, suspended cards are excluded.
