@@ -1,24 +1,18 @@
 # Anki Quick Search
 
-I don't want to show **suspended** cards by default and I often want to search for **new** or **due** cards within a deck. While it's possible to use search queries for them, switching to another deck resets the query, requiring me to re-enter it.
-To streamline this, I created this add-on—it automatically appends search filters as needed.
+![Screenshot](https://github.com/ntwo1980/AnkiQuickSearch/blob/main/screenshot.png?raw=true)
 
-![Screenshot](https://raw.githubusercontent.com/ntwo1980/AnkiQuickSearch/refs/heads/main/screenshot.png)
+A simple Anki addon that adds a second-row quick filter bar under the browser search bar for fast card filtering. By default, this addon hides suspended cards.
 
-This simple Anki add-on adds filter controls to the browser search bar.
-By default, **suspended cards are hidden**.
+## Features
 
-## Filter options
-
-- **Suspended** – When checked, suspended cards are included in the search results. By default, they are hidden.
-- **New** – Show only new (unstudied) cards.
-- **Due** – Single-select dropdown to filter cards due within a specified number of days (1, 3, 7, 14, or 30).
-- **Studied** – Single-select dropdown to filter cards studied within a specified number of days (1, 3, 7, 14, or 30).
-- **Added** – Single-select dropdown to filter cards added within a specified number of days (1, 3, 7, 14, or 30).
-- **Introduced** – Single-select dropdown to filter cards introduced (first studied) within a specified number of days (1, 3, 7, 14, or 30).
-- **Again** – Single-select dropdown to filter cards rated "Again" within a specified number of days (1, 3, 7, 14, or 30).
-- **Flag** – Multi-select dropdown to filter cards by flag. You can select "Any flag" to show cards with any flag, or select one or more specific flags.
-- **Flag** – Multi-select dropdown to filter by flag:
-  - **Any flag** – Show only flagged cards (any color).
-  - **flag 1–7** – Show cards with specific flag(s).
-- **Added** – Single-select dropdown to filter cards added within a specified number of days (1, 3, 7, 14, or 30).
+- The filter bar appears on the second row of the Browser, directly below the search box.
+- Current control order from left to right: **Due**, **New**, **Studied**, **Added**, **Introduced**, **Again**, **Flag**, **Suspended**.
+- **Due**: A single-select filter with options `in 0 days`, `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
+- **New**: A checkbox that limits results to new cards.
+- **Studied**: A single-select filter with options `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
+- **Added**: A single-select filter with options `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
+- **Introduced**: A single-select filter with options `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
+- **Again**: A single-select filter with options `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
+- **Flag**: A multi-select filter with `Any flag` or one or more specific flags from `flag 1` to `flag 7`.
+- **Suspended**: When checked, suspended cards are included in the search results. When unchecked, suspended cards are excluded.
