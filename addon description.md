@@ -6,8 +6,6 @@ A simple Anki addon that adds a second-row quick filter bar under the browser se
 
 ## Features
 
-- The filter bar appears on the second row of the Browser, directly below the search box.
-- Current control order from left to right: **Due**, **New**, **Studied**, **Added**, **Introduced**, **Again**, **Flag**, **Marked**, **Suspended**.
 - **Due**: A single-select filter with options `in 0 days`, `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
 - **New**: A checkbox that limits results to new cards.
 - **Studied**: A single-select filter with options `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
