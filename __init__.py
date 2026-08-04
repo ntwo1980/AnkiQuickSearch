@@ -186,16 +186,13 @@ def create_switchable_combobox(browser: Browser, name: str, single_selection: bo
 def setup_quick_search_in_browser(browser: Browser):
     global cbSuspended, cbDue, cbNew, cbMarked, cbFlag, cbRecent, cbStudied, cbIntroduced, cbAgain
 
-    # Find existing layout to remove it if it exists
-    if browser.form.gridLayout.itemAtPosition(0, 2):
-        item = browser.form.gridLayout.itemAtPosition(0, 2)
-        if item.layout():
-            # This is the grid layout we added before
-            while item.layout().count():
-                child = item.layout().takeAt(0)
-                if child.widget():
-                    child.widget().deleteLater()
-            item.layout().deleteLater()
+    # Remove existing quicksearch row/toggle if they exist.
+    old_filter_row = browser.findChild(QWidget, "aqsFilterRow")
+    if old_filter_row is not None:
+        old_filter_row.deleteLater()
+    old_toggle = browser.findChild(QCheckBox, "aqsQuickSearchToggle")
+    if old_toggle is not None:
+        old_toggle.deleteLater()
 
     # Use a single horizontal row so spacing between each condition is uniform.
     filter_row_host = QWidget(browser)
@@ -329,6 +326,34 @@ def setup_quick_search_in_browser(browser: Browser):
 
     filter_row.addStretch(1)
 
+    # First-line toggle for showing/hiding the second-line quicksearch controls.
+    quicksearch_toggle = QCheckBox("QuickSearch", browser)
+    quicksearch_toggle.setObjectName("aqsQuickSearchToggle")
+    quicksearch_toggle.setCursor(Qt.CursorShape.PointingHandCursor)
+    quicksearch_toggle.setFixedHeight(22)
+    quicksearch_toggle.setStyleSheet("""
+        QCheckBox#aqsQuickSearchToggle {
+            spacing: 4px;
+            padding: 0 2px;
+            color: #2e3a4a;
+            font-weight: 500;
+        }
+        QCheckBox#aqsQuickSearchToggle::indicator {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #9eacbf;
+            border-radius: 4px;
+            background: #ffffff;
+        }
+        QCheckBox#aqsQuickSearchToggle::indicator:checked {
+            border: 1px solid #2d6cdf;
+            background: #2d6cdf;
+        }
+    """)
+    quicksearch_toggle.setChecked(True)
+    quicksearch_toggle.toggled.connect(filter_row_host.setVisible)
+
+    browser.form.gridLayout.addWidget(quicksearch_toggle, 0, 2)
     browser.form.gridLayout.addWidget(filter_row_host, 1, 1, 1, 8)
     #browser.form.gridLayout.setColumnMinimumWidth(0, 150)
 

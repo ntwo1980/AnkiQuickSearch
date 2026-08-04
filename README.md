@@ -6,11 +6,14 @@ To streamline this, I created this add-on—it automatically appends search filt
 ![Screenshot](https://raw.githubusercontent.com/ntwo1980/AnkiQuickSearch/refs/heads/main/screenshot.png)
 
 This simple Anki add-on adds a quick filter bar on the second row of the Browser, directly below the search bar.
+The first row now includes a **QuickSearch** toggle checkbox to show or hide the second-row quick filter controls.
 By default, **suspended cards are hidden**.
 
 ## Filter options
 
 Current order from left to right: **Due**, **New**, **Studied**, **Added**, **Introduced**, **Again**, **Flag**, **Marked**, **Suspended**.
+
+- **QuickSearch (first row)** - Shows or hides the entire second-row quick filter bar. It is enabled by default.
 
 - **Due** – Single-select filter with `in 0 days`, `in 1 days`, `in 3 days`, `in 7 days`, `in 14 days`, and `in 30 days`.
 - **New** – Checkbox to show only new cards.
